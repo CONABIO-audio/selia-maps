@@ -1,0 +1,40 @@
+{% extends 'selia_templates/base.html' %}
+{% load selia_forms %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}:: SELIA - Login ::{% endblock %}
+
+{% block body %}
+  <div class="container mt-4">
+    <h1 class="text-center logo my-4">
+      <img src="{% static 'selia_templates/img/selia.png' %}" width="9%"  />
+    </h1>
+    <div class="row justify-content-center">
+      <div class="col-lg-4 col-md-6 col-sm-8">
+        <div class="card shadow">
+          <div class="card-body">
+            {# Display a form #}
+            <form method="post" novalidate>
+              {% csrf_token %}
+              <button type="submit" class="btn btn-selia btn-block">SELIA</button>
+              <br />
+              <div class="container-fluid w-100">
+                {% bootstrap_form form.username %}
+
+                {% bootstrap_form form.password %}
+              </div>
+              <br />
+              <button type="submit" class="btn btn-selia btn-block">{% trans 'Enter' %}</button>
+            </form>
+          </div>
+        </div>
+        <div class="text-center py-2">
+          <small>
+            <a href={% url 'selia_registration:password_reset' %} class="btn btn-link text-muted">{% trans 'Forgot your password?' %}</a>
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
