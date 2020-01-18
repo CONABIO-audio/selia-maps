@@ -1,0 +1,27 @@
+{% extends 'selia_maps/base.html' %}
+
+{% block map-setup %}
+
+var pointList = {% if point_list %}JSON.parse('{{ point_list | safe }}'){% else %}[]{% endif %};
+
+var pointSource = new ol.source.Vector({});
+var pointLayer = new ol.layer.Vector({
+  source: pointSource,
+})
+
+for (var i = 0; i < pointList.length; i++) {
+  let point = pointList[i];
+  let coordinates = ol.proj.fromLonLat(point.coordinates);
+  let pointFeature = new ol.Feature({
+    geometry: new ol.geom.Point(coordinates),
+    labelPoint: new ol.geom.Point(coordinates),
+    name: point.name
+  });
+
+  pointFeature.setStyle(iconStyleFunction(point.icon_url, point.scale || 0.06, point.opacity || 1, point.color));
+  pointSource.addFeature(pointFeature);
+}
+
+layers.push(pointLayer);
+
+{% endblock %}

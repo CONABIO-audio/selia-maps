@@ -1,0 +1,15 @@
+{% extends 'selia_maps/site.html' %}
+
+{% block map-css %}
+{{ block.super }}
+.ol-zoom-in { background-color: transparent!important; color: var(--secondary)!important; }
+.ol-zoom-out { background-color: transparent!important; color: var(--secondary)!important; }
+.ol-zoom { background-color: transparent!important; }
+{% endblock %}
+
+{% block map-controls %}
+var controls = ol.control.defaults({
+  attribution: false,
+  zoom: true,
+})
+{% endblock %}

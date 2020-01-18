@@ -1,5 +1,5 @@
 include LICENSE
 include README.md
-recursive-include selia_registration/static *
-recursive-include selia_registration/templates *
+recursive-include selia_maps/static *
+recursive-include selia_maps/templates *
 recursive-include docs *

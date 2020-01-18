@@ -1,0 +1,62 @@
+{% extends 'selia_maps/base.html' %}
+
+{% block center-point %}
+var latitude = {{ latitude | stringformat:"3.8f" }};
+var longitude = {{ longitude | stringformat:"3.8f" }};
+var centerPoint = ol.proj.fromLonLat([longitude, latitude]);
+{% endblock %}
+
+{% block map-setup %}
+var pointList = JSON.parse('{{ point_list | safe }}');
+
+var pointSource = new ol.source.Vector({});
+var pointLayer = new ol.layer.Vector({
+  source: pointSource,
+})
+
+for (var i = 0; i < pointList.length; i++) {
+  let point = pointList[i];
+  let coordinates = ol.proj.fromLonLat(point.coordinates);
+  let pointFeature = new ol.Feature({
+    geometry: new ol.geom.Point(coordinates),
+    labelPoint: new ol.geom.Point(coordinates),
+    name: point.name
+  });
+
+  pointFeature.setStyle(iconStyleFunction(point.icon_url, point.scale || 0.06, point.opacity || 1));
+  pointSource.addFeature(pointFeature);
+}
+
+layers.push(pointLayer);
+
+var currentPoint = new ol.geom.Point(centerPoint)
+layers.push(new ol.layer.Vector({
+  source: new ol.source.Vector({
+    features: [
+        new ol.Feature({
+          geometry: currentPoint,
+          labelPoint: currentPoint,
+          name: 'Site',
+        }),
+      ]
+  }),
+  style: iconStyleFunction('{{ icon_url }}', 0.06, 1)
+}));
+
+window.addEventListener('load', () => {
+  var latitude_form = document.getElementById('{{ latitude_form_id }}');
+  var longitude_form = document.getElementById('{{ longitude_form_id }}');
+
+  latitude_form.addEventListener("change", function(event) {
+    latitude = event.target.value;
+    currentPoint.setCoordinates(ol.proj.fromLonLat([longitude, latitude]));
+    initView.setCenter(currentPoint.getCoordinates());
+  });
+
+  longitude_form.addEventListener("change", function(event) {
+    longitude = event.target.value;
+    currentPoint.setCoordinates(ol.proj.fromLonLat([longitude, latitude]));
+    initView.setCenter(currentPoint.getCoordinates());
+  });
+}, false);
+{% endblock %}

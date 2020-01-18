@@ -1,0 +1,31 @@
+{% load static%}
+
+<link rel="stylesheet" href="{% static 'vendor/openlayers/ol.css' %}">
+<script src="{% static 'vendor/openlayers/ol.js' %}"></script>
+
+<script type="text/javascript">
+  {% include 'selia_maps/styles.html'%}
+
+  {% block map-extra-functionalities %}
+  function iconStyleFunction(url, scale, opacity, color) {
+    return new ol.style.Style({
+      image: new ol.style.Icon({
+        anchor: [0.5, 1],
+        scale: scale,
+        size: [512, 512],
+        opacity: opacity,
+        src: url,
+        color: color
+      })
+    });
+  }
+
+  function reload_map(map) {
+    let thisMap = map;
+
+    window.addEventListener('load', () => {
+      thisMap.updateSize();
+    }, false);
+  }
+  {% endblock %}
+</script>

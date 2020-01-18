@@ -1,0 +1,65 @@
+{% block map-div %}
+<div id="{{ map_id }}" class="map rounded"></div>
+{% endblock %}
+
+<style media="screen">
+  {% block map-css %}
+  #{{ map_id }} .aligned label { float: inherit; }
+  #{{ map_id }} {
+    height: {% if height %}{{ height }}{% else %}500px{% endif %};
+    width: {% if width %}{{ width }}{% else %}100%{% endif %};
+    position: relative;
+    vertical-align: top;
+    float: left; }
+  {% endblock %}
+</style>
+
+<script type="text/javascript">
+  {% block map-script %}
+
+  {% block center-point %}
+  var centerPoint = ol.proj.fromLonLat([
+    {% block center-point-coordinates %}
+      {{ longitude | stringformat:"3.8f" }},
+      {{ latitude | stringformat:"3.8f" }}
+    {% endblock %}
+  ]);
+  {% endblock %}
+
+  var layers = []
+
+  {% block base-layers %}
+  layers.push(new ol.layer.Tile({source: new ol.source.OSM()}));
+  {% endblock %}
+
+  {% block initial-view %}
+  var initView = new ol.View({
+    center: centerPoint,
+    zoom: {{ zoom | stringformat:"d" }}
+  })
+  {% endblock %}
+
+  {% block map-setup %}
+  {% endblock %}
+
+  {% block map-controls %}
+  var controls = ol.control.defaults({
+    attribution: true,
+    zoom: true,
+  })
+  {% endblock %}
+
+  {% block map-create %}
+  var map = new ol.Map({
+    target: "{{ map_id }}",
+    layers: layers,
+    view: initView,
+    controls: controls,
+  });
+  {% endblock %}
+
+  {% block map-end %}
+  reload_map(map);
+  {% endblock %}
+  {% endblock %}
+</script>

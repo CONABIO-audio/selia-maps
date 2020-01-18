@@ -1,0 +1,16 @@
+{% extends 'selia_maps/base.html' %}
+
+{% block map-setup %}
+layers.push(new ol.layer.Vector({
+  source: new ol.source.Vector({
+    features: [
+        new ol.Feature({
+          geometry: new ol.geom.Point(centerPoint),
+          labelPoint: new ol.geom.Point(centerPoint),
+          name: 'Site',
+        }),
+      ]
+  }),
+  style: siteStyle
+}));
+{% endblock %}
