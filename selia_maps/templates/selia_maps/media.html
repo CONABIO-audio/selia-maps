@@ -2,11 +2,26 @@
 
 <link rel="stylesheet" href="{% static 'vendor/openlayers/ol.css' %}">
 <script src="{% static 'vendor/openlayers/ol.js' %}"></script>
+<script src="https://unpkg.com/ol-layerswitcher@3.5.0"></script>
+<link rel="stylesheet" href="https://unpkg.com/ol-layerswitcher@3.5.0/src/ol-layerswitcher.css" />
+<link rel="stylesheet" href="{% static 'selia_maps/selia_maps.css' %}">
 
 <script type="text/javascript">
   {% include 'selia_maps/styles.html'%}
 
   {% block map-extra-functionalities %}
+  const VECTOR_LAYER = 'vector';
+  const TILE_LAYER = 'tile';
+  const IMAGE_LAYER = 'image';
+  const CIRCLE_FEATURE = 'circle';
+  const LINE_STRING_FEATURE = 'lineString';
+  const MULTI_LINE_STRING_FEATURE = 'multiLineString';
+  const MULTI_POINT_FEATURE = 'multiPoint';
+  const MULTI_POLYGON_FEATURE = 'multiPolygon';
+  const POINT_FEATURE = 'point';
+  const POLYGON_FEATURE = 'polygon';
+
+
   function iconStyleFunction(url, scale, opacity, color) {
     return new ol.style.Style({
       image: new ol.style.Icon({
@@ -27,5 +42,143 @@
       thisMap.updateSize();
     }, false);
   }
+
+  function createLayerFromInfo(layerInfo) {
+    let type = layerInfo['type'] || VECTOR_LAYER;
+
+    if (type == VECTOR_LAYER) {
+      return createVectorLayerFromInfo(layerInfo);
+    }
+
+    if (type == TILE_LAYER) {
+      return createTileLayerFromInfo(layerInfo);
+    }
+
+    if (type == IMAGE_LAYER) {
+      return createImageLayerFromInfo(layerInfo);
+    }
+
+    throw `Unrecognized layer type: ${type}`;
+  }
+
+  function createVectorLayerFromInfo(layerInfo) {
+    let source = new ol.source.Vector({});
+    let features = layerInfo['features'] || [];
+
+    for (let i = 0; i < features.length; i++) {
+      source.addFeature(createVectorFeatureFromInfo(features[i]));
+    }
+
+    return new ol.layer.Vector({
+      source: source,
+      title: layerInfo['title'],
+    });;
+  }
+
+  function createTileLayerFromInfo(layerInfo) {
+    throw "Tile layer creator not implemented";
+  }
+
+  function createImageLayerFromInfo(layerInfo) {
+    throw "Image layer creator not implemented";
+  }
+
+  function createVectorFeatureFromInfo(featureInfo) {
+    let type = featureInfo['features'] || POINT_FEATURE;
+
+    if (type == CIRCLE_FEATURE) {
+      return createCircleFeatureFromInfo(featureInfo);
+    }
+    if (type == LINE_STRING_FEATURE) {
+      return createLineStringFeatureFromInfo(featureInfo);
+    }
+    if (type == MULTI_LINE_STRING_FEATURE) {
+      return createMultiLineStringFeatureFromInfo(featureInfo);
+    }
+    if (type == MULTI_POINT_FEATURE) {
+      return createPointFeatureFromInfo(featureInfo);
+    }
+    if (type == MULTI_POLYGON_FEATURE) {
+      return createMultiPolygonFeatureFromInfo(featureInfo);
+    }
+    if (type == POINT_FEATURE) {
+      return createPointFeatureFromInfo(featureInfo);
+    }
+    if (type == POLYGON_FEATURE) {
+      return createPolygonFeatureFromInfo(featureInfo);
+    }
+  }
+
+  function createCircleFeatureFromInfo(featureInfo) {
+    throw 'createCircleFeatureFromInfo Not implemented';
+  }
+
+  function createLineStringFeatureFromInfo(featureInfo) {
+    throw 'createLineStringFeatureFromInfo Not implemented';
+  }
+
+  function createMultiLineStringFeatureFromInfo(featureInfo) {
+    throw 'createMultiLineStringFeatureFromInfo Not implemented';
+  }
+
+  function createPointFeatureFromInfo(featureInfo) {
+    throw 'createPointFeatureFromInfo Not implemented';
+  }
+
+  function createMultiPolygonFeatureFromInfo(featureInfo) {
+    throw 'createMultiPolygonFeatureFromInfo Not implemented';
+  }
+
+  function createPointFeatureFromInfo(featureInfo) {
+    let coordinates = ol.proj.fromLonLat(featureInfo.coordinates);
+
+    let feature = new ol.Feature({
+      geometry: new ol.geom.Point(coordinates),
+      labelPoint: new ol.geom.Point(coordinates),
+      name: featureInfo.name,
+    });
+
+    feature.setStyle(createStyleFromInfo(featureInfo.style));
+    return feature;
+  }
+
+  function createPolygonFeatureFromInfo(featureInfo) {
+    throw 'createPolygonFeatureFromInfo Not implemented';
+  }
+
+  function createStyleFromInfo(styleInfo) {
+    let styleData = {};
+
+    if ('image' in styleInfo) {
+      styleData['image'] = createImageStyleFromInfo(styleInfo['image']);
+    }
+
+    if ('stroke' in styleInfo) {
+      styleData['stroke'] = createStrokeStyleFromInfo(styleInfo['stroke']);
+    }
+
+    if ('fill' in styleInfo) {
+      styleData['fill'] = createFillStyleFromInfo(styleInfo['fill']);
+    }
+
+    if ('text' in styleInfo) {
+      styleData['text'] = createTextStyleFromInfo(styleInfo['text']);
+    }
+
+    return new ol.style.Style(styleData);
+  }
+
+  function createImageStyleFromInfo(styleInfo) {
+    return new ol.style.Icon({
+      anchor: styleInfo.anchor || [0.5, 1],
+      scale: styleInfo.scale,
+      size: styleInfo.size || [512, 512],
+      opacity: styleInfo.opacity,
+      src: styleInfo.url,
+      color: styleInfo.color
+    });
+  }
+
+
   {% endblock %}
 </script>

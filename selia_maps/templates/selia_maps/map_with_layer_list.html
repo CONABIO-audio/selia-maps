@@ -1,0 +1,10 @@
+{% extends 'selia_maps/base_with_layer_controls.html' %}
+
+{% block map-setup %}
+var layerInfoList = {% if layer_list %}JSON.parse('{{ layer_list | safe }}'){% else %}[]{% endif %};
+
+for (var i = 0; i < layerInfoList.length; i++) {
+  let layerInfo = layerInfoList[i];
+  layers.push(createLayerFromInfo(layerInfo));
+}
+{% endblock %}

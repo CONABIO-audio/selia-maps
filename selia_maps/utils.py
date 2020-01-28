@@ -8,15 +8,23 @@ def point_features_from_sampling_event(sampling_event, **kwargs):
     sampling_event_type = sampling_event.sampling_event_type
 
     features = {
+        "type": "point",
         "coordinates": [
             site.longitude,
             site.latitude
         ],
-        "icon_url": sampling_event_type.icon.url,
+        "style": {
+            "image": {
+                "url": sampling_event_type.icon.url,
+                "scale": "0.06"
+            }
+        },
         "name": _("Sampling event {}").format(sampling_event.pk)
     }
 
-    features.update(kwargs)
+    for key, value in kwargs.items():
+        features["style"]["image"][key] = value
+
     return features
 
 
@@ -27,27 +35,43 @@ def point_features_from_sampling_event_device(sampling_event_device, **kwargs):
     device_type = device.device_type
 
     features = {
+        "type": "point",
         "coordinates": [
             sampling_event_device.longitude,
             sampling_event_device.latitude
         ],
-        "icon_url": device_type.icon.url,
+        "style": {
+            "image": {
+                "url": device_type.icon.url,
+                "scale": "0.06"
+            }
+        },
         "name": _('Deployed device {}').format(sampling_event_device.pk)
     }
 
-    features.update(kwargs)
+    for key, value in kwargs.items():
+        features["style"]["image"][key] = value
+
     return features
 
 
 def point_features_from_site(site, **kwargs):
     features = {
+        "type": "point",
         "coordinates": [
             site.longitude,
             site.latitude
         ],
-        "icon_url": static('selia_maps/site.png'),
+        "style": {
+            "image": {
+                "url": static('selia_maps/site.png'),
+                "scale": "0.06"
+            }
+        },
         "name": _('Site {}').format(site.pk)
     }
 
-    features.update(kwargs)
+    for key, value in kwargs.items():
+        features["style"]["image"][key] = value
+
     return features

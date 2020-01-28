@@ -1,3 +1,5 @@
+{% load i18n %}
+
 {% block map-div %}
 <div id="{{ map_id }}" class="map rounded"></div>
 {% endblock %}
@@ -28,9 +30,56 @@
 
   var layers = []
 
+
+  var base_layers = [];
+
   {% block base-layers %}
-  layers.push(new ol.layer.Tile({source: new ol.source.OSM()}));
+  base_layers.push(new ol.layer.Tile({
+    source: new ol.source.XYZ({
+      url: 'https://stamen-tiles-a.a.ssl.fastly.net/terrain/{z}/{x}/{y}.png',
+      attributions: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      attributionsCollapsible: false,
+    }),
+    title: "Stamen Terrain",
+    type: "base",
+    visible: false
+  }));
+
+  base_layers.push(new ol.layer.Tile({
+    source: new ol.source.XYZ({
+      url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+      attributions: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+      attributionsCollapsible: false,
+    }),
+    title: "ESRI World Imagery",
+    type: "base",
+    visible: false
+  }));
+
+  base_layers.push(new ol.layer.Tile({
+    source: new ol.source.OSM(),
+    title: "Open Street Map",
+    type: 'base',
+    visible: false
+  }));
+
+  base_layers.push(new ol.layer.Tile({
+    source: new ol.source.XYZ({
+      url: 'https://a.tile.opentopomap.org/{z}/{x}/{y}.png',
+      attributions: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
+      attributionsCollapsible: false,
+    }),
+    title: "Open Topo Map",
+    type: "base",
+    visible: true
+  }));
   {% endblock %}
+
+  layers.push(new ol.layer.Group({
+    title: "{% trans 'Base Maps' %}",
+    layers: base_layers,
+  }));
+
 
   {% block initial-view %}
   var initView = new ol.View({
@@ -56,6 +105,11 @@
     view: initView,
     controls: controls,
   });
+
+  
+  window.addEventListener('load', () => {
+    $('#{{ map_id }}').data('map', map);
+  }, false);
   {% endblock %}
 
   {% block map-end %}

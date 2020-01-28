@@ -1,10 +1,24 @@
 {% extends 'selia_maps/site.html' %}
 
+{% block map-div %}
+<div id="{{ map_id }}" class="map rounded map-no-controls"></div>
+{% endblock %}
+
 {% block map-css %}
 {{ block.super }}
-.ol-zoom-in { background-color: transparent!important; color: var(--secondary)!important; }
-.ol-zoom-out { background-color: transparent!important; color: var(--secondary)!important; }
-.ol-zoom { background-color: transparent!important; }
+.map-no-controls .ol-zoom-in { background-color: transparent!important; color: var(--secondary)!important; }
+.map-no-controls .ol-zoom-out { background-color: transparent!important; color: var(--secondary)!important; }
+.map-no-controls .ol-zoom { background-color: transparent!important; }
+{% endblock %}
+
+{% block base-layers %}
+base_layers.push(new ol.layer.Tile({
+  source: new ol.source.XYZ({
+    url: 'https://a.tile.opentopomap.org/{z}/{x}/{y}.png',
+  }),
+  title: "Open Topo Map",
+  type: "base"
+}));
 {% endblock %}
 
 {% block map-controls %}

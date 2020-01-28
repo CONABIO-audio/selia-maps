@@ -1,0 +1,30 @@
+.layer-switcher {
+  top: 0.5em!important;
+}
+
+.layer-switcher .panel {
+  border: 0px;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.layer-switcher li.layer label {
+  font-size: 0.8rem;
+  margin: 0px;
+  padding: 0px;
+  display: inline;
+  vertical-align: bottom;
+  margin-left: 0.4em;
+}
+
+.layer-switcher li.group label {
+  margin: 0px;
+  margin-top: 0.2em;
+}
+
+.layer-switcher .group ul {
+  padding-left: 0px;
+}
+
+.layer-switcher li.layer input {
+  margin: 0px;
+}

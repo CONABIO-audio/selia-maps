@@ -1,0 +1,6 @@
+{% extends 'selia_maps/base.html' %}
+
+{% block map-create %}
+{{ block.super }}
+map.addControl(new ol.control.LayerSwitcher());
+{% endblock %}

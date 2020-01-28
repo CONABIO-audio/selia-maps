@@ -1,4 +1,4 @@
-{% extends 'selia_maps/base.html' %}
+{% extends 'selia_maps/base_with_layer_controls.html' %}
 
 {% block center-point %}
 var latitude = {{ latitude | stringformat:"3.8f" }};
@@ -7,6 +7,7 @@ var centerPoint = ol.proj.fromLonLat([longitude, latitude]);
 {% endblock %}
 
 {% block map-setup %}
+{% block locality %}
 {% if locality %}
 var wkt = '{{ locality }}';
 let format = new ol.format.WKT();
@@ -30,7 +31,9 @@ layers.push(new ol.layer.Vector({
   })
 }))
 {% endif %}
+{% endblock locality %}
 
+{% block point %}
 var currentPoint = new ol.geom.Point(centerPoint)
 layers.push(new ol.layer.Vector({
   source: new ol.source.Vector({
@@ -44,7 +47,9 @@ layers.push(new ol.layer.Vector({
   }),
   style: siteStyle
 }));
+{% endblock %}
 
+{% block controls %}
 window.addEventListener('load', () => {
   var latitude_form = document.getElementById('{{ latitude_form_id }}');
   var longitude_form = document.getElementById('{{ longitude_form_id }}');
@@ -61,6 +66,5 @@ window.addEventListener('load', () => {
     initView.setCenter(currentPoint.getCoordinates());
   });
 }, false);
-
-
+{% endblock %}
 {% endblock %}
