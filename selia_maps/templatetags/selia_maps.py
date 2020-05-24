@@ -4,6 +4,7 @@ import json
 from django import template
 from django.conf import settings
 from django.utils.translation import gettext as _
+from django.templatetags.static import static
 
 from irekua_database.models import SamplingEvent
 from irekua_database.models import SamplingEventDevice
@@ -234,6 +235,11 @@ def sampling_event_form_map(latitude_form, longitude_form, sampling_event, colle
         }
     ]
 
+    if device_type.icon:
+        icon = device_type.icon.url
+    else:
+        icon = static('selia_maps/site.png')
+
     return {
         'latitude': float(latitude),
         'longitude': float(longitude),
@@ -241,6 +247,6 @@ def sampling_event_form_map(latitude_form, longitude_form, sampling_event, colle
         'map_id': 'form_map',
         'latitude_form_id': str(latitude_form.auto_id),
         'longitude_form_id': str(longitude_form.auto_id),
-        'icon_url': device_type.icon.url,
+        'icon_url': icon,
         'layer_list': json.dumps(layer_list),
     }

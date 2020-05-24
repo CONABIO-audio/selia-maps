@@ -7,6 +7,11 @@ def point_features_from_sampling_event(sampling_event, **kwargs):
     site = collection_site.site
     sampling_event_type = sampling_event.sampling_event_type
 
+    if sampling_event_type.icon:
+        icon = sampling_event_type.icon.url
+    else:
+        icon = static('selia_maps/site.png')
+
     features = {
         "type": "point",
         "coordinates": [
@@ -15,7 +20,7 @@ def point_features_from_sampling_event(sampling_event, **kwargs):
         ],
         "style": {
             "image": {
-                "url": sampling_event_type.icon.url,
+                "url": icon,
                 "scale": "0.06"
             }
         },
@@ -34,6 +39,11 @@ def point_features_from_sampling_event_device(sampling_event_device, **kwargs):
     device = physical_device.device
     device_type = device.device_type
 
+    if device_type.icon:
+        icon = device_type.icon.url
+    else:
+        icon = static('selia_maps/site.png')
+
     features = {
         "type": "point",
         "coordinates": [
@@ -42,7 +52,7 @@ def point_features_from_sampling_event_device(sampling_event_device, **kwargs):
         ],
         "style": {
             "image": {
-                "url": device_type.icon.url,
+                "url": icon,
                 "scale": "0.06"
             }
         },
